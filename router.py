@@ -1,21 +1,17 @@
 import pandas as pd
 
-user = '/Users/erichuang/Documents/dev/Python/researchProj'
+user = '/Users/erichuang/Documents/dev/Python/researchproj2'
 SMtransactions = pd.read_csv(user + "/LI-Small_Trans.csv")
 #HItransactions = pd.read_csv(user)
 #SMpatterns = pd.read_csv(user + "LI-Medium_Patterns.txt")
 HIpatterns = pd.read_csv(user + "/HI-Medium_Patterns.txt")
-
-with open("HI-Medium_Patterns.txt", "r", encoding="utf-8") as f: #some standardization for shitty commas
-    for _ in range(10):
-        print(f.readline())
 
 def parseFilePatterns(HIpatterns):
     rows = []
     currentTypology = None
     currentDescriptor = None 
 
-    with open(HIpatterns): 
+    with open(HIpatterns, "r", encoding="utf-8") as f: 
         for line in f:
             line = line.strip()
 
@@ -26,18 +22,18 @@ def parseFilePatterns(HIpatterns):
                 header = line.replace("BEGIN LAUNDERING ATTEMPT - ", "")
             
                 if ":" in header:
-                    currentTypology, currentDescription = header.split(":", 1)
+                    currentTypology, currentDescriptor = header.split(":", 1)
                     currentTypology = currentTypology.strip()
-                    currentDescription = currentDescription.strip()
+                    currentDescriptor = currentDescriptor.strip()
                 else:
                     currentTypology = header.strip()
-                    currentDescription = ""
+                    currentDescriptor = ""
 
                 continue
      
             if line.startswith("END LAUNDERING ATTEMPT"):
                 currentTypology = None
-                currentDescription = None
+                currentDescriptor = None
                 continue
         
             parts = line.split(",")
@@ -60,10 +56,10 @@ def parseFilePatterns(HIpatterns):
                 "payment_format": parts[9],
                 "is_laundering": int(parts[10]),
                 "typology": currentTypology,
-                "typology_description": currentDescription
+                "typology_descriptor": currentDescriptor
                 })
 
-            return pd.DataFrame(rows)
+    return pd.DataFrame(rows)
 
 patterns_df = parseFilePatterns("HI-Medium_Patterns.txt")
 
