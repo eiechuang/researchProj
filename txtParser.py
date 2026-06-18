@@ -1,9 +1,6 @@
 import pandas as pd
 
 user = '/Users/erichuang/Documents/dev/Python/researchproj2'
-SMtransactions = pd.read_csv(user + "/LI-Small_Trans.csv")
-#HItransactions = pd.read_csv(user)
-#SMpatterns = pd.read_csv(user + "LI-Medium_Patterns.txt")
 HIpatterns = pd.read_csv(user + "/HI-Medium_Patterns.txt")
 
 def parseFilePatterns(HIpatterns):
@@ -65,4 +62,6 @@ patterns_df = parseFilePatterns("HI-Medium_Patterns.txt")
 
 print(patterns_df.head())
 print(patterns_df["typology"].value_counts())
+print (patterns_df.shape)
 
+patterns_df.to_csv("parsed_patterns.csv", index=False)
