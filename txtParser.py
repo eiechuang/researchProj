@@ -64,4 +64,4 @@ print(patterns_df.head())
 print(patterns_df["typology"].value_counts())
 print (patterns_df.shape)
 
-patterns_df.to_csv("parsed_patterns.csv", index=False)
+patterns_df.to_csv("routed_patterns.csv", index=False)
