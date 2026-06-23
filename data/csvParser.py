@@ -1,7 +1,7 @@
 import pandas as pd
 
-user = "/Users/erichuang/Documents/dev/Python/researchproj2"
-file = "/LI-Small_Trans.csv"
+user = "/Users/erichuang/Documents/dev/Python/researchproj2/data"
+file = "/HI-Small_Trans.csv"
 input_path = user + file
 
 

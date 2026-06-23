@@ -1,7 +1,7 @@
 import pandas as pd
 
-user = '/Users/erichuang/Documents/dev/Python/researchproj2'
-HIpatterns = pd.read_csv(user + "/HI-Medium_Patterns.txt")
+user = '/Users/erichuang/Documents/dev/Python/researchproj2/data'
+HIpatterns = pd.read_csv(user + "/HI-Small_Patterns.txt")
 
 def parseFilePatterns(HIpatterns):
     rows = []
@@ -58,7 +58,7 @@ def parseFilePatterns(HIpatterns):
 
     return pd.DataFrame(rows)
 
-patterns_df = parseFilePatterns("HI-Medium_Patterns.txt")
+patterns_df = parseFilePatterns("HI-Small_Patterns.txt")
 
 print(patterns_df.head())
 print(patterns_df["typology"].value_counts())
