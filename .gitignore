@@ -6,3 +6,4 @@ kaggle.json
 routed_patterns.csv
 routed_transactions.csv
 IBMBank.csv
+*.csv
