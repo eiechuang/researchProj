@@ -1,6 +1,7 @@
 import pandas as pd
 from xgboost import XGBClassifier
-
+from catboost import CatBoostClassifier
+import sys 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
@@ -9,11 +10,10 @@ from sklearn.metrics import average_precision_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
 
 
-DATA_FILE = "/Users/erichuang/Documents/dev/Python/researchproj2/data/ibm_model_ready.csv"
+
+DATA_FILE = r"C:\Users\016134703\Documents\researchProj\ibm_model_ready.csv"
 
 
 def evaluate_dataset(csv_path=DATA_FILE, dataset_name="IBM Bank"):
@@ -71,17 +71,7 @@ def evaluate_dataset(csv_path=DATA_FILE, dataset_name="IBM Bank"):
     print("scale_pos_weight:", scale_pos_weight)
 
     models = {
-        #"Logistic Regression": LogisticRegression(
-         #   max_iter=1000,
-          #  class_weight="balanced"
-        #),
-       # "Random Forest": RandomForestClassifier(
-       #     n_estimators=100,
-       #     random_state=42,
-      #      class_weight="balanced",
-      #      n_jobs=-1
-    #    ),
-
+        
         "XGBoost": XGBClassifier(
             n_estimators=300,
             max_depth=5,
@@ -107,7 +97,7 @@ def evaluate_dataset(csv_path=DATA_FILE, dataset_name="IBM Bank"):
 
     y_score = model.predict_proba(X_test)[:, 1]
 
-    thresholds = [0.50, 0.25, 0.10, 0.05, 0.025, 0.01, 0.005, 0.001]
+    thresholds = [0.1, 0.2, 0.3, 0.4, 0.5]
 
     for threshold in thresholds:
         y_pred = (y_score >= threshold).astype(int)
