@@ -1,18 +1,21 @@
 import pandas as pd
+DATA_DIR =  r"C:\Users\016134703\Documents\researchProj\data"
 
-DATA_DIR = "/Users/erichuang/Documents/dev/Python/researchproj2/data/"
+TRANSACTIONS_CSV = DATA_DIR + r"\routed_transactions.csv"
+PATTERNS_CSV = DATA_DIR + r"\routed_patterns.csv"
+ACCOUNTS_CSV = DATA_DIR + r"\routed_accounts"
 
-TRANSACTIONS_CSV = DATA_DIR + "routed_transactions.csv"
-PATTERNS_CSV = DATA_DIR + "routed_patterns.csv"
 OUTPUT_CSV = DATA_DIR + "IBMBank.csv"
 
 
-def load_files(transactions_csv, patterns_csv):
+def load_files(transactions_csv, patterns_csv, ):
     transactions_df = pd.read_csv(transactions_csv)
     patterns_df = pd.read_csv(patterns_csv)
+   # accounts_df = pad.read_csv(accounts_csv)  #read accounts dataframe, need to ascertain accounts_csv reference
 
     transactions_df["timestamp"] = pd.to_datetime(transactions_df["timestamp"])
     patterns_df["timestamp"] = pd.to_datetime(patterns_df["timestamp"])
+
 
     return transactions_df, patterns_df
 
@@ -139,3 +142,4 @@ def build_router_dataset(
 if __name__ == "__main__":
     routed_df = build_router_dataset()
     print(routed_df.head())
+
