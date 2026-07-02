@@ -1,71 +1,141 @@
 import pandas as pd
 
-user = '/Users/erichuang/Documents/dev/Python/researchproj2'
-SMtransactions = pd.read_csv(user + "/LI-Small_Trans.csv")
-#HItransactions = pd.read_csv(user)
-#SMpatterns = pd.read_csv(user + "LI-Medium_Patterns.txt")
-HIpatterns = pd.read_csv(user + "/HI-Medium_Patterns.txt")
+DATA_DIR = "/Users/erichuang/Documents/dev/Python/researchproj2/data/"
 
-def parseFilePatterns(HIpatterns):
-    rows = []
-    currentTypology = None
-    currentDescriptor = None 
+TRANSACTIONS_CSV = DATA_DIR + "routed_transactions.csv"
+PATTERNS_CSV = DATA_DIR + "routed_patterns.csv"
+OUTPUT_CSV = DATA_DIR + "IBMBank.csv"
 
-    with open(HIpatterns, "r", encoding="utf-8") as f: 
-        for line in f:
-            line = line.strip()
 
-            if not line:
-                continue
+def load_files(transactions_csv, patterns_csv):
+    transactions_df = pd.read_csv(transactions_csv)
+    patterns_df = pd.read_csv(patterns_csv)
 
-            if line.startswith("BEGIN LAUNDERING ATTEMPT"):
-                header = line.replace("BEGIN LAUNDERING ATTEMPT - ", "")
-            
-                if ":" in header:
-                    currentTypology, currentDescriptor = header.split(":", 1)
-                    currentTypology = currentTypology.strip()
-                    currentDescriptor = currentDescriptor.strip()
-                else:
-                    currentTypology = header.strip()
-                    currentDescriptor = ""
+    transactions_df["timestamp"] = pd.to_datetime(transactions_df["timestamp"])
+    patterns_df["timestamp"] = pd.to_datetime(patterns_df["timestamp"])
 
-                continue
-     
-            if line.startswith("END LAUNDERING ATTEMPT"):
-                currentTypology = None
-                currentDescriptor = None
-                continue
-        
-            parts = line.split(",")
+    return transactions_df, patterns_df
 
-            if len(parts) != 11:
-                print(f"Skipping malformed line: {line}")
 
-                continue
+def add_router_features(df):
+    df = df.copy()
 
-            rows.append({
-                "timestamp": parts[0],
-                "from_bank": parts[1],
-                "from_account": parts[2],
-                "to_bank": parts[3],
-                "to_account": parts[4],
-                "amount_received": float(parts[5]),
-                "receiving_currency": parts[6],
-                "amount_paid": float(parts[7]),
-                "payment_currency": parts[8],
-                "payment_format": parts[9],
-                "is_laundering": int(parts[10]),
-                "typology": currentTypology,
-                "typology_descriptor": currentDescriptor
-                })
+    df["same_bank"] = (df["from_bank"] == df["to_bank"]).astype(int)
+    df["same_account"] = (df["from_account"] == df["to_account"]).astype(int)
 
-    return pd.DataFrame(rows)
+    df["currency_changed"] = (
+        df["receiving_currency"] != df["payment_currency"]
+    ).astype(int)
 
-patterns_df = parseFilePatterns("HI-Medium_Patterns.txt")
+    df["amount_difference"] = (
+        pd.to_numeric(df["amount_paid"], errors="coerce")
+        - pd.to_numeric(df["amount_received"], errors="coerce")
+    ).abs()
 
-print(patterns_df.head())
-print(patterns_df["typology"].value_counts())
+    df["amount_ratio"] = (
+        pd.to_numeric(df["amount_paid"], errors="coerce")
+        / pd.to_numeric(df["amount_received"], errors="coerce").replace(0, pd.NA)
+    )
 
-#TODO - build case 1 and 2
+    df["amount_paid"] = pd.to_numeric(df["amount_paid"], errors="coerce").fillna(0)
+    df["amount_received"] = pd.to_numeric(df["amount_received"], errors="coerce").fillna(0)
 
-print(patterns_df)
+    return df
+
+
+def merge_typology_labels(transactions_df, patterns_df):
+    merge_keys = [
+        "timestamp",
+        "from_bank",
+        "from_account",
+        "to_bank",
+        "to_account",
+        "amount_received",
+        "receiving_currency",
+        "amount_paid",
+        "payment_currency",
+        "payment_format",
+        "is_laundering"
+    ]
+
+    merged_df = transactions_df.merge(
+        patterns_df[merge_keys + ["typology", "typology_descriptor"]],
+        on=merge_keys,
+        how="left"
+    )
+
+    merged_df["typology"] = merged_df["typology"].fillna("NORMAL_OR_UNLABELED")
+    merged_df["typology_descriptor"] = merged_df["typology_descriptor"].fillna("")
+
+    return merged_df
+
+
+def route_transaction(row):
+    # If an IBM typology was successfully merged, use it.
+    if row["typology"] != "NORMAL_OR_UNLABELED":
+        return row["typology"]
+
+    # Otherwise use rule-based bank transaction routing.
+    if row["payment_format"] == "Reinvestment":
+        return "SELF_REINVESTMENT"
+
+    if row["same_account"] == 1:
+        return "SELF_TRANSFER"
+
+    if row["currency_changed"] == 1:
+        return "CURRENCY_EXCHANGE"
+
+    if row["same_bank"] == 0 and row["amount_paid"] >= 10000:
+        return "LARGE_CROSS_BANK_TRANSFER"
+
+    if row["same_bank"] == 0:
+        return "CROSS_BANK_TRANSFER"
+
+    if row["payment_format"] == "ACH":
+        return "ACH_TRANSFER"
+
+    if row["payment_format"] == "Wire":
+        return "WIRE_TRANSFER"
+
+    return "OTHER"
+
+
+def build_router_dataset(
+    transactions_csv=TRANSACTIONS_CSV,
+    patterns_csv=PATTERNS_CSV,
+    output_csv=OUTPUT_CSV
+):
+    print("Loading files...")
+    transactions_df, patterns_df = load_files(transactions_csv, patterns_csv)
+
+    print("Adding router features...")
+    transactions_df = add_router_features(transactions_df)
+
+    print("Merging typology labels...")
+    routed_df = merge_typology_labels(transactions_df, patterns_df)
+
+    print("Assigning router types...")
+    routed_df["router_type"] = routed_df.apply(route_transaction, axis=1)
+
+    routed_df.to_csv(output_csv, index=False)
+
+    print("Saved:", output_csv)
+    print()
+    print("Shape:")
+    print(routed_df.shape)
+    print()
+    print("Router type counts:")
+    print(routed_df["router_type"].value_counts())
+    print()
+    print("Typology counts:")
+    print(routed_df["typology"].value_counts())
+    print()
+    print("Laundering counts by router type:")
+    print(pd.crosstab(routed_df["router_type"], routed_df["is_laundering"]))
+
+    return routed_df
+
+
+if __name__ == "__main__":
+    routed_df = build_router_dataset()
+    print(routed_df.head())

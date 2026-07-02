@@ -1,6 +1,6 @@
 import pandas as pd
 
-user = '/Users/erichuang/Documents/dev/Python/researchproj2/data'
+user = r"C:\Users\016134703\Documents\researchProj\data"
 HIpatterns = pd.read_csv(user + "/HI-Small_Patterns.txt")
 
 def parseFilePatterns(HIpatterns):
