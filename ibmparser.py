@@ -1,7 +1,7 @@
 import pandas as pd
 
-INPUT_FILE = "/Users/erichuang/Documents/dev/Python/researchproj2/data/IBMBank.csv"
-OUTPUT_FILE = "/Users/erichuang/Documents/dev/Python/researchproj2/data/ibm_model_ready.csv"
+INPUT_FILE = r"C:\Users\016134703\Documents\researchProj\data/IBMBank.csv"
+OUTPUT_FILE = r"C:\Users\016134703\Documents\researchProj\data/ibm_model_ready.csv"
 
 
 def prepare_ibm_data(input_file=INPUT_FILE, output_file=OUTPUT_FILE):

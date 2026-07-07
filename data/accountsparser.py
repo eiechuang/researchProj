@@ -3,11 +3,12 @@ import re
 from difflib import SequenceMatcher
 
 
-DATA_DIR = "/Users/erichuang/Documents/dev/Python/researchproj2/data/"
 
-TRANSACTIONS_FILE = DATA_DIR + "routed_transactions.csv"
-ACCOUNTS_FILE = DATA_DIR + "HI-Small_Accounts.csv"
-OUTPUT_FILE = DATA_DIR + "IBMBank.csv"
+DATA_DIR = r"C:\Users\016134703\Documents\researchProj\data"
+
+TRANSACTIONS_FILE = DATA_DIR + r"\routed_transactions.csv"
+ACCOUNTS_FILE = DATA_DIR + r"\HI-Small_Accounts.csv"
+OUTPUT_FILE = DATA_DIR + r"\IBMBank.csv"
 
 def clean_text(text):
     text = str(text).lower()
