@@ -1,14 +1,11 @@
 import pandas as pd
 from xgboost import XGBClassifier
-from catboost import CatBoostClassifier
-import sys 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import roc_auc_score
-from sklearn.metrics import average_precision_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
+import seaborn
 from sklearn.metrics import f1_score
 
 
@@ -110,6 +107,10 @@ def evaluate_dataset(csv_path=DATA_FILE, dataset_name="IBM Bank"):
         print("Recall:", round(recall_score(y_test, y_pred, zero_division=0), 4))
         print("F1:", round(f1_score(y_test, y_pred, zero_division=0), 4))
         print()
+
+seaborn.heatmap()
+
+
 
 
 if __name__ == "__main__":
