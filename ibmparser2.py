@@ -6,16 +6,13 @@ from spellchecker import SpellChecker
 
 DATA_DIR = r"/Users/016134703/Documents/researchproj/data/"
 
-TRANS_FILE = DATA_DIR + r"/HI-Small_Trans.csv"
-PATTERNS_FILE = DATA_DIR + r"/HI-Small_Patterns.txt"
-ACCOUNTS_FILE = DATA_DIR + r"/HI-Small_Accounts.csv"
+TRANS_FILE = DATA_DIR + r"\routed_transactions.csv"
+PATTERNS_FILE = DATA_DIR + r"/routed_patterns.csv"
+ACCOUNTS_FILE = DATA_DIR + r"/Accounts.csv"
 
 OUTPUT_FILE = DATA_DIR + r"/final_ibm_bank.csv"
 
 
-# -----------------------------
-# Spellchecker setup
-# -----------------------------
 
 spell = SpellChecker(distance=1)
 
@@ -380,6 +377,20 @@ def load_accounts(accounts_file):
         "Entity ID": "entity_id",
         "Entity Name": "entity_name"
     })
+#    required_cols = [
+#        "bank_name",
+#        "bank_id",
+#        "account_number",
+#        "entity_id",
+#        "entity_name"
+#    ]
+    
+#    missing_cols = [col for col in required_cols if col not in accounts.columns]
+
+#    if missing_cols:
+#        raise ValueError(
+#            "Missing expected account column: {missing_cols}."
+#        )
 
     accounts["bank_id"] = (
         accounts["bank_id"]

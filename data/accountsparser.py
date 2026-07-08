@@ -8,7 +8,7 @@ DATA_DIR = r"C:\Users\016134703\Documents\researchProj\data"
 
 TRANSACTIONS_FILE = DATA_DIR + r"\routed_transactions.csv"
 ACCOUNTS_FILE = DATA_DIR + r"\HI-Small_Accounts.csv"
-OUTPUT_FILE = DATA_DIR + r"\IBMBank.csv"
+OUTPUT_FILE = DATA_DIR + r"\Accounts.csv"
 
 def clean_text(text):
     text = str(text).lower()
@@ -72,9 +72,11 @@ def find_possible_misspellings(text, target_terms, threshold=0.75):
 def load_accounts(accounts_file):
     accounts = pd.read_csv(accounts_file)
 
-    print("Original account columns:")
-    print(accounts.columns.tolist())
-    print()
+    accounts.columns = (accounts.columns.str.replace("\ufeff","",regex=False).str.strip())
+
+    print("cleaned acc names") 
+    print (accounts.columns.tolist())
+    print() 
 
     accounts = accounts.rename(columns={
         "Bank Name": "bank_name",
@@ -83,6 +85,25 @@ def load_accounts(accounts_file):
         "Entity ID": "entity_id",
         "Entity Name": "entity_name"
     })
+
+    print ("Columns post rename")
+    print (accounts.columns.tolist())
+    print ()
+
+    required_cols = [
+        "bank_name",
+        "bank_id",
+        "account_number",
+        "entity_id",
+        "entity_name"
+    ]
+
+    missing_cols = [col for col in required_cols if col not in accounts.columns]
+
+    if missing_cols:
+        raise ValueError(
+            "Missing expected account column: {missing_cols}."
+        )
 
     # Clean bank ID and account number so they match transaction file format better.
     accounts["bank_id"] = (
@@ -101,6 +122,7 @@ def load_accounts(accounts_file):
     accounts["bank_name"] = accounts["bank_name"].astype(str).str.strip()
     accounts["entity_name"] = accounts["entity_name"].astype(str).str.strip()
     accounts["entity_id"] = accounts["entity_id"].astype(str).str.strip()
+  #  accounts["bank_id"] = accounts ["bank_id"].astype(str).str.strip()
 
     return accounts
 

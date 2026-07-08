@@ -108,33 +108,16 @@ def build_router_dataset(
     patterns_csv=PATTERNS_CSV,
     output_csv=OUTPUT_CSV
 ):
-    print("Loading files...")
     transactions_df, patterns_df = load_files(transactions_csv, patterns_csv)
 
-    print("Adding router features...")
     transactions_df = add_router_features(transactions_df)
 
-    print("Merging typology labels...")
+    
     routed_df = merge_typology_labels(transactions_df, patterns_df)
 
-    print("Assigning router types...")
     routed_df["router_type"] = routed_df.apply(route_transaction, axis=1)
 
     routed_df.to_csv(output_csv, index=False)
-
-    print("Saved:", output_csv)
-    print()
-    print("Shape:")
-    print(routed_df.shape)
-    print()
-    print("Router type counts:")
-    print(routed_df["router_type"].value_counts())
-    print()
-    print("Typology counts:")
-    print(routed_df["typology"].value_counts())
-    print()
-    print("Laundering counts by router type:")
-    print(pd.crosstab(routed_df["router_type"], routed_df["is_laundering"]))
 
     return routed_df
 
