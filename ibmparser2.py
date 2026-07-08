@@ -8,7 +8,7 @@ DATA_DIR = r"/Users/016134703/Documents/researchproj/data/"
 
 TRANS_FILE = DATA_DIR + r"\routed_transactions.csv"
 PATTERNS_FILE = DATA_DIR + r"/routed_patterns.csv"
-ACCOUNTS_FILE = DATA_DIR + r"/Accounts.csv"
+ACCOUNTS_FILE = DATA_DIR + r"/HI-Small_accounts.csv"
 
 OUTPUT_FILE = DATA_DIR + r"/final_ibm_bank.csv"
 
@@ -369,58 +369,58 @@ def route_transaction(row):
 
 def load_accounts(accounts_file):
     accounts = pd.read_csv(accounts_file)
-
+ 
     # Clean hidden characters and spaces from column names
     accounts.columns = (
         accounts.columns
         .str.replace("\ufeff", "", regex=False)
         .str.strip()
     )
-
+ 
     print("\nRAW ACCOUNT COLUMNS:")
     for col in accounts.columns:
         print(repr(col))
     print()
-
+ 
     # Flexible rename map
     rename_map = {
         "Bank Name": "bank_name",
         "BankName": "bank_name",
         "bank_name": "bank_name",
         "bank name": "bank_name",
-
+ 
         "Bank ID": "bank_id",
         "BankID": "bank_id",
         "Bank Id": "bank_id",
         "Bank id": "bank_id",
         "bank_id": "bank_id",
         "bank id": "bank_id",
-
+ 
         "Account Number": "account_number",
         "AccountNumber": "account_number",
         "Account": "account_number",
         "account_number": "account_number",
         "account number": "account_number",
-
+ 
         "Entity ID": "entity_id",
         "EntityID": "entity_id",
         "Entity Id": "entity_id",
         "entity_id": "entity_id",
         "entity id": "entity_id",
-
+ 
         "Entity Name": "entity_name",
         "EntityName": "entity_name",
         "entity_name": "entity_name",
         "entity name": "entity_name",
     }
-
+ 
     accounts = accounts.rename(columns=rename_map)
-
+ 
     print("ACCOUNT COLUMNS AFTER RENAME:")
     for col in accounts.columns:
         print(repr(col))
     print()
-
+ 
     required_cols = [
         "bank_name",
         "bank_id",
@@ -428,32 +428,32 @@ def load_accounts(accounts_file):
         "entity_id",
         "entity_name"
     ]
-
+ 
     missing_cols = [col for col in required_cols if col not in accounts.columns]
-
+ 
     if missing_cols:
         raise ValueError(
             f"Missing columns after rename: {missing_cols}\n"
             f"Available columns: {accounts.columns.tolist()}"
         )
-
+ 
     accounts["bank_id"] = (
         accounts["bank_id"]
         .astype(str)
         .str.replace("#", "", regex=False)
         .str.strip()
     )
-
+ 
     accounts["account_number"] = (
         accounts["account_number"]
         .astype(str)
         .str.strip()
     )
-
+ 
     accounts["bank_name"] = accounts["bank_name"].astype(str).str.strip()
     accounts["entity_id"] = accounts["entity_id"].astype(str).str.strip()
     accounts["entity_name"] = accounts["entity_name"].astype(str).str.strip()
-
+ 
     return accounts
 
 
