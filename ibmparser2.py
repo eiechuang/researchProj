@@ -370,27 +370,72 @@ def route_transaction(row):
 def load_accounts(accounts_file):
     accounts = pd.read_csv(accounts_file)
 
-    accounts = accounts.rename(columns={
-        "Bank Name": "bank_name",
-        "Bank ID": "bank_id",
-        "Account Number": "account_number",
-        "Entity ID": "entity_id",
-        "Entity Name": "entity_name"
-    })
-#    required_cols = [
-#        "bank_name",
-#        "bank_id",
-#        "account_number",
-#        "entity_id",
-#        "entity_name"
-#    ]
-    
-#    missing_cols = [col for col in required_cols if col not in accounts.columns]
+    # Clean hidden characters and spaces from column names
+    accounts.columns = (
+        accounts.columns
+        .str.replace("\ufeff", "", regex=False)
+        .str.strip()
+    )
 
-#    if missing_cols:
-#        raise ValueError(
-#            "Missing expected account column: {missing_cols}."
-#        )
+    print("\nRAW ACCOUNT COLUMNS:")
+    for col in accounts.columns:
+        print(repr(col))
+    print()
+
+    # Flexible rename map
+    rename_map = {
+        "Bank Name": "bank_name",
+        "BankName": "bank_name",
+        "bank_name": "bank_name",
+        "bank name": "bank_name",
+
+        "Bank ID": "bank_id",
+        "BankID": "bank_id",
+        "Bank Id": "bank_id",
+        "Bank id": "bank_id",
+        "bank_id": "bank_id",
+        "bank id": "bank_id",
+
+        "Account Number": "account_number",
+        "AccountNumber": "account_number",
+        "Account": "account_number",
+        "account_number": "account_number",
+        "account number": "account_number",
+
+        "Entity ID": "entity_id",
+        "EntityID": "entity_id",
+        "Entity Id": "entity_id",
+        "entity_id": "entity_id",
+        "entity id": "entity_id",
+
+        "Entity Name": "entity_name",
+        "EntityName": "entity_name",
+        "entity_name": "entity_name",
+        "entity name": "entity_name",
+    }
+
+    accounts = accounts.rename(columns=rename_map)
+
+    print("ACCOUNT COLUMNS AFTER RENAME:")
+    for col in accounts.columns:
+        print(repr(col))
+    print()
+
+    required_cols = [
+        "bank_name",
+        "bank_id",
+        "account_number",
+        "entity_id",
+        "entity_name"
+    ]
+
+    missing_cols = [col for col in required_cols if col not in accounts.columns]
+
+    if missing_cols:
+        raise ValueError(
+            f"Missing columns after rename: {missing_cols}\n"
+            f"Available columns: {accounts.columns.tolist()}"
+        )
 
     accounts["bank_id"] = (
         accounts["bank_id"]
