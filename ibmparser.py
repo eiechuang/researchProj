@@ -55,20 +55,21 @@ def prepare_ibm_data(input_file=INPUT_FILE, output_file=OUTPUT_FILE):
         model_df["typology"] = "BANK_UNKNOWN"
 
     # Shared columns that TBML and real estate will also use later
-    model_df["cross_border_flag"] = model_df["currency_changed_flag"]
-    model_df["high_risk_country_flag"] = 0
-    model_df["third_party_flag"] = 0
-    model_df["entity_obfuscation_flag"] = 0
-    model_df["rapid_movement_flag"] = 0
-    model_df["pricing_anomaly_flag"] = 0
+#    model_df["cross_border_flag"] = model_df["currency_changed_flag"]
+#    model_df["high_risk_country_flag"] = 0
+#    model_df["third_party_flag"] = 0
+#    model_df["entity_obfuscation_flag"] = 0
+#    model_df["rapid_movement_flag"] = 0
+#    model_df["pricing_anomaly_flag"] = 0
 
-    model_df["risk_score"] = (
-        model_df["high_value_flag"] * 1.0
-        + model_df["very_high_value_flag"] * 1.5
-        + model_df["cross_bank_flag"] * 0.75
-        + model_df["currency_changed_flag"] * 1.0
-        + model_df["same_account_flag"] * 0.25
-    )
+ #   model_df["risk_score"] = (
+ #       model_df["high_value_flag"] * 1.0
+ #       + model_df["very_high_value_flag"] * 1.5
+ #       + model_df["cross_bank_flag"] * 0.75
+ #       + model_df["currency_changed_flag"] * 1.0
+ #       + model_df["same_account_flag"] * 0.25
+ #   )
+
 
     model_df["is_laundering"] = df["is_laundering"].astype(int)
 
