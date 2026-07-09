@@ -126,9 +126,7 @@ def was_corrected(text):
     return int(original != corrected)
 
 
-# -----------------------------
-# Load and clean transactions
-# -----------------------------
+#load
 
 def load_transactions(trans_file):
     df = pd.read_csv(trans_file)
@@ -165,9 +163,6 @@ def load_transactions(trans_file):
     return df
 
 
-# -----------------------------
-# Optional pattern parser
-# -----------------------------
 
 def parse_patterns(pattern_file):
     rows = []
@@ -262,9 +257,7 @@ def merge_patterns(transactions_df, patterns_df):
     return merged
 
 
-# -----------------------------
-# Transaction feature engineering
-# -----------------------------
+#transacitons
 
 def add_transaction_features(df):
     df = df.copy()
@@ -363,9 +356,7 @@ def route_transaction(row):
     return "BANK_OTHER"
 
 
-# -----------------------------
-# Account loading and enrichment
-# -----------------------------
+#load 
 
 def load_accounts(accounts_file):
     accounts = pd.read_csv(accounts_file)
@@ -454,7 +445,6 @@ def load_accounts(accounts_file):
     accounts["entity_id"] = accounts["entity_id"].astype(str).str.strip()
     accounts["entity_name"] = accounts["entity_name"].astype(str).str.strip()
  
-    return accounts
 
 
 def add_bank_name_flags(accounts):

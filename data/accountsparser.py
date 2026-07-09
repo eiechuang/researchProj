@@ -65,9 +65,7 @@ def find_possible_misspellings(text, target_terms, threshold=0.75):
     return matches
 
 
-# -----------------------------
-# Account file cleaning
-# -----------------------------
+#account cleaning
 
 def load_accounts(accounts_file):
     accounts = pd.read_csv(accounts_file)
@@ -127,9 +125,7 @@ def load_accounts(accounts_file):
     return accounts
 
 
-# -----------------------------
-# Bank name feature engineering
-# -----------------------------
+#bank names
 
 CRYPTO_TERMS = [
     "crypto",
@@ -212,11 +208,7 @@ def add_bank_name_flags(accounts):
     ).astype(int)
 
     return accounts
-
-
-# -----------------------------
-# Entity type feature engineering
-# -----------------------------
+#entities
 
 def extract_entity_type(entity_name):
     name = clean_text(entity_name)
@@ -312,9 +304,7 @@ def merge_accounts(transactions, accounts):
     return df
 
 
-# -----------------------------
-# Transaction-level account features
-# -----------------------------
+#transactions
 
 def add_account_transaction_features(df):
     df = df.copy()
