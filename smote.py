@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-
+import xgboost as xgb
+from imblearn.over_sampling import SMOTE 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     confusion_matrix,
@@ -167,7 +168,7 @@ def train_xgboost(X, y, use_smote=True):
 
     if use_smote:
         smote = SMOTE(
-            sampling_strategy=0.10,  # minority becomes 10% of majority
+            sampling_strategy=0.5,  # minority becomes 10% of majority
             random_state=42,
             k_neighbors=5
         )
@@ -181,7 +182,7 @@ def train_xgboost(X, y, use_smote=True):
     negative_count = (y_train == 0).sum()
     positive_count = (y_train == 1).sum()
 
-    scale_pos_weight = negative_count / positive_count
+    scale_pos_weight = positive_count/negative_count
 
     print("Training counts:")
     print("Negative:", negative_count)
@@ -209,41 +210,32 @@ def train_xgboost(X, y, use_smote=True):
 
     return model, X_train, X_test, y_train, y_test, y_score
 
+def evaluate_thresholds(y_test, y_score, thresholds=None):
+    if thresholds is None:
+        thresholds = [0.01, 0.03, 0.05, 0.1] 
 
-def evaluate_at_fp_budget(y_test, y_score, fp_budget=100000):
-    results = pd.DataFrame({
-        "actual": y_test.values,
-        "score": y_score
-    })
-
-    results = results.sort_values("score", ascending=False).reset_index(drop=True)
-
-    results["false_positive"] = (results["actual"] == 0).astype(int)
-    results["true_positive"] = (results["actual"] == 1).astype(int)
-
-    results["cum_fp"] = results["false_positive"].cumsum()
-    results["cum_tp"] = results["true_positive"].cumsum()
-
-    allowed = results[results["cum_fp"] <= fp_budget]
-
-    tp = allowed["true_positive"].sum()
-    fp = allowed["false_positive"].sum()
-    flagged = len(allowed)
-    total_pos = results["actual"].sum()
-
-    recall = tp / total_pos if total_pos > 0 else 0
-    precision = tp / flagged if flagged > 0 else 0
-
-    print("=" * 60)
-    print("False-positive budget:", fp_budget)
-    print("Flagged transactions:", flagged)
-    print("True positives:", int(tp))
-    print("False positives:", int(fp))
-    print("Recall:", round(recall, 4))
-    print("Precision:", round(precision, 4))
+    print("ROC-AUC:", round(roc_auc_score(y_test, y_score), 4))
+    print("PR-AUC:", round(average_precision_score(y_test, y_score), 4))
     print()
 
+    for threshold in thresholds:
+        y_pred = (y_score >= threshold).astype(int)
 
+        cm = confusion_matrix(y_test, y_pred)
+
+        precision = precision_score(y_test, y_pred, zero_division=0)
+        recall = recall_score(y_test, y_pred, zero_division=0)
+        f1 = f1_score(y_test, y_pred, zero_division=0)
+
+        print("=" * 60)
+        print("Threshold:", threshold)
+        print("Confusion Matrix:")
+        print(cm)
+        print("Precision:", round(precision, 4))
+        print("Recall:", round(recall, 4))
+        print("F1:", round(f1, 4))
+        print()
+"""""
 def show_feature_importance(model, feature_names, top_n=30):
     importance_df = pd.DataFrame({
         "feature": feature_names,
@@ -261,7 +253,7 @@ def show_feature_importance(model, feature_names, top_n=30):
     print()
 
     return importance_df
-
+"""""
 
 def main():
     df = load_data()
@@ -272,18 +264,15 @@ def main():
 
     evaluate_thresholds(y_test, y_score)
 
-    evaluate_at_fp_budget(y_test, y_score, fp_budget=100000)
-    evaluate_at_fp_budget(y_test, y_score, fp_budget=50000)
-    evaluate_at_fp_budget(y_test, y_score, fp_budget=25000)
 
-    importance_df = show_feature_importance(
-        model,
-        X.columns,
-        top_n=40
-    )
+#    importance_df = show_feature_importance(
+#        model,
+#        X.columns,
+#        top_n=40
+#    )
 
-    importance_df.to_csv("data/xgb_feature_importance.csv", index=False)
-    print("Saved feature importance to data/xgb_feature_importance.csv")
+#    importance_df.to_csv("data/SMOTEXGB_importance.csv", index=False)
+#    print("Saved feature importance to data/SMOTEimportance.csv")
 
 
 if __name__ == "__main__":

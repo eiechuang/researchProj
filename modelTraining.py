@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
-
+from imblearn.over_sampling import SMOTE
+import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     confusion_matrix,
@@ -195,7 +196,7 @@ def train_xgboost(X, y):
 
 def evaluate_thresholds(y_test, y_score, thresholds=None):
     if thresholds is None:
-        thresholds = [0.90, 0.75, 0.50, 0.25, 0.10, 0.05, 0.01]
+        thresholds = [0.25, 0.35, 0.45, 0.5]
 
     print("ROC-AUC:", round(roc_auc_score(y_test, y_score), 4))
     print("PR-AUC:", round(average_precision_score(y_test, y_score), 4))
