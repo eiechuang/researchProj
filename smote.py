@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 from imblearn.over_sampling import SMOTE 
+from imblearn.under_sampling import RandomUnderSampler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     confusion_matrix,
@@ -153,7 +154,7 @@ def build_feature_matrix(df):
     return X, y
 
 
-def train_xgboost(X, y, use_smote=True):
+def train_xgboost(X, y, use_undersampling=True,sampling_strategy=0.01):
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -166,7 +167,7 @@ def train_xgboost(X, y, use_smote=True):
     print(y_train.value_counts())
     print()
 
-    if use_smote:
+    if use_undersampling:
         smote = SMOTE(
             sampling_strategy=0.5,  # minority becomes 10% of majority
             random_state=42,
@@ -175,7 +176,7 @@ def train_xgboost(X, y, use_smote=True):
 
         X_train, y_train = smote.fit_resample(X_train, y_train)
 
-        print("After SMOTE:")
+        print("After Undersampling:")
         print(y_train.value_counts())
         print()
 
