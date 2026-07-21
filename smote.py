@@ -154,7 +154,7 @@ def build_feature_matrix(df):
     return X, y
 
 
-def train_xgboost(X, y, use_undersampling=True,sampling_strategy=0.01):
+def train_xgboost(X, y, use_SMOTE=True):
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
@@ -167,14 +167,14 @@ def train_xgboost(X, y, use_undersampling=True,sampling_strategy=0.01):
     print(y_train.value_counts())
     print()
 
-    if use_undersampling:
-        smote = SMOTE(
-            sampling_strategy=0.5,  # minority becomes 10% of majority
+    if use_SMOTE:
+        SMOTE = SMOTE(
+       #     sampling_strategy=0.5,  # sampling rate, can change
             random_state=42,
             k_neighbors=5
         )
 
-        X_train, y_train = smote.fit_resample(X_train, y_train)
+        X_train, y_train = SMOTE.fit_resample(X_train, y_train)
 
         print("After Undersampling:")
         print(y_train.value_counts())
@@ -213,7 +213,7 @@ def train_xgboost(X, y, use_undersampling=True,sampling_strategy=0.01):
 
 def evaluate_thresholds(y_test, y_score, thresholds=None):
     if thresholds is None:
-        thresholds = [0.01, 0.03, 0.05, 0.1] 
+        thresholds = [0.1,0.2,0.3,0.4] 
 
     print("ROC-AUC:", round(roc_auc_score(y_test, y_score), 4))
     print("PR-AUC:", round(average_precision_score(y_test, y_score), 4))
@@ -224,9 +224,9 @@ def evaluate_thresholds(y_test, y_score, thresholds=None):
 
         cm = confusion_matrix(y_test, y_pred)
 
-        precision = precision_score(y_test, y_pred, zero_division=0)
-        recall = recall_score(y_test, y_pred, zero_division=0)
-        f1 = f1_score(y_test, y_pred, zero_division=0)
+        precision = precision_score(y_test, y_pred)
+        recall = recall_score(y_test, y_pred,)
+        f1 = f1_score(y_test, y_pred,)
 
         print("=" * 60)
         print("Threshold:", threshold)

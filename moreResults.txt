@@ -1,0 +1,195 @@
+with some fuzzy installations; 
+
+Threshold: 0.05
+Confusion Matrix:
+[[857808 156826]
+ [     6   1029]]
+Precision: 0.0065
+Recall: 0.9942
+F1: 0.013
+
+============================================================
+Threshold: 0.1
+Confusion Matrix:
+[[873700 140934]
+ [    11   1024]]
+Precision: 0.0072
+Recall: 0.9894
+F1: 0.0143
+
+============================================================
+Threshold: 0.2
+Confusion Matrix:
+[[893608 121026]
+ [    30   1005]]
+Precision: 0.0082
+Recall: 0.971
+F1: 0.0163
+
+Threshold: 0.3
+Confusion Matrix:
+[[913928 100706]
+ [    49    986]]
+Precision: 0.0097
+Recall: 0.9527
+F1: 0.0192
+
+============================================================
+Threshold: 0.35
+Confusion Matrix:
+[[925317  89317]
+ [    64    971]]
+Precision: 0.0108
+Recall: 0.9382
+F1: 0.0213
+
+
+
+fuzzy + smote: not really worth noting...
+
+Threshold: 0.01
+Confusion Matrix:
+[[988923  25711]
+ [   169    866]]
+Precision: 0.0326
+Recall: 0.8367
+F1: 0.0627
+
+============================================================
+Threshold: 0.005
+Confusion Matrix:
+[[952072  62562]
+ [   104    931]]
+Precision: 0.0147
+Recall: 0.8995
+F1: 0.0289
+
+============================================================
+Threshold: 0.001
+Confusion Matrix:
+[[861905 152729]
+ [    10   1025]]
+Precision: 0.0067
+Recall: 0.9903
+F1: 0.0132
+
+smote appears to cause too many false positives and recall becomes compeltely garbage.
+understampling appears to be the way to go, will be testing without and with fuzzying. 
+
+
+
+
+
+- seems overall SMOTE isn't very good. will try understampling next
+- WITHOUT FUZZY
+============================================================
+Threshold: 0.1
+Confusion Matrix:
+[[876907 137727]
+ [    16   1019]]
+Precision: 0.0073
+Recall: 0.9845
+F1: 0.0146
+
+============================================================
+Threshold: 0.2
+Confusion Matrix:
+[[895231 119403]
+ [    24   1011]]
+Precision: 0.0084
+Recall: 0.9768
+F1: 0.0166
+
+============================================================
+Threshold: 0.3
+Confusion Matrix:
+[[912785 101849]
+ [    45    990]]
+Precision: 0.0096
+Recall: 0.9565
+F1: 0.0191
+
+============================================================
+Threshold: 0.4
+Confusion Matrix:
+[[935852  78782]
+ [    68    967]]
+Precision: 0.0121
+Recall: 0.9343
+F1: 0.0239
+
+WITH FUZZY
+
+============================================================
+Threshold: 0.1
+Confusion Matrix:
+[[873596 141038]
+ [    11   1024]]
+Precision: 0.0072
+Recall: 0.9894
+F1: 0.0143
+
+============================================================
+Threshold: 0.2
+Confusion Matrix:
+[[891162 123472]
+ [    29   1006]]
+Precision: 0.0081
+Recall: 0.972
+F1: 0.016
+
+============================================================
+Threshold: 0.3
+Confusion Matrix:
+[[909316 105318]
+ [    44    991]]
+Precision: 0.0093
+Recall: 0.9575
+F1: 0.0185
+
+============================================================
+Threshold: 0.4
+Confusion Matrix:
+[[932926  81708]
+ [    67    968]]
+Precision: 0.0117
+Recall: 0.9353
+F1: 0.0231
+
+Scale Recall = 1
+
+============================================================
+Threshold: 0.01
+Confusion Matrix:
+[[917001  97633]
+ [    60    975]]
+Precision: 0.0099
+Recall: 0.942
+F1: 0.0196
+
+============================================================
+Threshold: 0.05
+Confusion Matrix:
+[[1000438   14196]
+ [    178     857]]
+Precision: 0.0569
+Recall: 0.828
+F1: 0.1065
+
+============================================================
+Threshold: 0.1
+Confusion Matrix:
+[[1006385    8249]
+ [    217     818]]
+Precision: 0.0902
+Recall: 0.7903
+F1: 0.1619
+
+============================================================
+Threshold: 0.15
+Confusion Matrix:
+[[1008789    5845]
+ [    256     779]]
+Precision: 0.1176
+Recall: 0.7527
+F1: 0.2034

@@ -48,13 +48,13 @@ def build_feature_matrix(df):
         # amount features
         "log_amount_paid",
         "log_amount_received",
-        "near_10000_flag",
-        "round_1000_flag",
-        "round_10000_flag",
-        "large_amount_flag",
-        "very_large_amount_flag",
+        "fuzzy_near_10000", #needs replacing -> 
+        "fuzzy_round_1000",
+        "fuzzy_round_10000",
+        "fuzzy_large_amount",
+        "fuzzy_very_large_amount",
         "cross_bank_large_flag",
-        "amount_mismatch_flag",
+        "fuzzy_amount mismatch",
         "high_amount_mismatch_flag",
 
         # account/entity features
@@ -89,18 +89,18 @@ def build_feature_matrix(df):
         "receiver_total_amount",
         "sender_avg_amount",
         "receiver_avg_amount",
-        "amount_vs_sender_avg",
-        "amount_vs_receiver_avg",
+        "fuzzy_amount_vs_sender_avg",
+        "fuzzy_amount_vs_reciever_avg",
         "sender_unique_receivers",
         "receiver_unique_senders",
-        "fan_out_flag",
-        "fan_in_flag",
+        "fuzzy_fan_out", #replacement needed
+        "fuzzy_fan_in",
         "sender_daily_tx_count",
         "receiver_daily_tx_count",
         "sender_daily_total",
         "receiver_daily_total",
-        "burst_sender_flag",
-        "burst_receiver_flag",
+        "fuzzy_sender_burst",
+        "fuzzy_reciever_burst",
 
         # engineered scores
         "structuring_score",
@@ -111,14 +111,13 @@ def build_feature_matrix(df):
         "engineered_risk_score",
     ]
 
-    categorical_features = [
+    categorical_features = [ #needs replacement
         "payment_format",
         "router_type",
         "sender_entity_type",
         "receiver_entity_type",
     ]
 
-    # Keep only columns that actually exist, so the script does not crash
     numeric_features = [col for col in numeric_features if col in df.columns]
     categorical_features = [col for col in categorical_features if col in df.columns]
 
@@ -181,7 +180,7 @@ def train_xgboost(X, y, use_undersampling=True,sampling_strategy=0.01):
     negative_count = (y_train == 0).sum()
     positive_count = (y_train == 1).sum()
 
-    scale_pos_weight = negative_count/positive_count
+    scale_pos_weight = 1
 
     print("Training counts:")
     print("Negative:", negative_count)
@@ -211,7 +210,7 @@ def train_xgboost(X, y, use_undersampling=True,sampling_strategy=0.01):
 
 def evaluate_thresholds(y_test, y_score, thresholds=None):
     if thresholds is None:
-        thresholds = [0.01, 0.03, 0.05, 0.1] 
+        thresholds = [0.01, 0.05, 0.1, 0.15] 
 
     print("ROC-AUC:", round(roc_auc_score(y_test, y_score), 4))
     print("PR-AUC:", round(average_precision_score(y_test, y_score), 4))
