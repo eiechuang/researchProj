@@ -1,0 +1,46 @@
+after building CSVparser, need to build typology specific models. 
+
+- Use randomForest to identify what version of laudnering attempt it is. 
+ 
+ - Will need the requisite data for specific types of fraud. Currently lack housing, for example - this can maybe be SMOTED
+- Write explicit weights
+
+-maybe build a KYC system as well, 
+
+GNN? 
+
+ideas
+-- steal numbers off of real cases of real estate laundering to train off of the full US set.
+
+
+Phase 1: IBM baseline model
+    - implement fuzzy rules for feature engineering 
+    -SMOTE?
+    -KYC coule be interestign
+Phase 2: Synthetic TBML generation
+
+
+Phase 3: Synthetic real estate generation
+Phase 4: Same evaluation model across all datasets
+
+
+update ibm parser
+
+"ideal case"
+~98% -> caught 98% of true laundering (24 cases/1024)
+
+ / 99,000 False positives/ 1.2 million cases
+
+96% catch rate/ 80k false positives
+89% catch rate -> 13k false positives
+
+goal 
+~50k false positives for 98%
+
+
+-> 3.01 gb, 
+
+>SMOTE , probably good for reducing false posiives
+> Hard limits > good for missing positives, but we don't do that much
+> graph representation of countires w/timestamp data
+> generate Trade based ML -> 3 gb   
