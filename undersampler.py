@@ -253,6 +253,69 @@ def show_feature_importance(model, feature_names, top_n=30):
     return importance_df
 """""
 
+
+def evaluate_thresholds(y_test, y_score, thresholds=None):
+    if thresholds is None:
+        thresholds = [0.3, 0.35]
+
+    print("ROC-AUC:", round(roc_auc_score(y_test, y_score), 4))
+    print("PR-AUC:", round(average_precision_score(y_test, y_score), 4))
+    print()
+
+    for threshold in thresholds:
+        y_pred = (y_score >= threshold).astype(int)
+
+        cm = confusion_matrix(y_test, y_pred)
+
+        precision = precision_score(y_test, y_pred, zero_division=0)
+        recall = recall_score(y_test, y_pred, zero_division=0)
+        f1 = f1_score(y_test, y_pred, zero_division=0)
+
+        print("=" * 60)
+        print("Threshold:", threshold)
+        print("Confusion Matrix:")
+        print(cm)
+        print("Precision:", round(precision, 4))
+        print("Recall:", round(recall, 4))
+        print("F1:", round(f1, 4))
+        print()
+
+def evaluate_at_fp_budget(y_test, y_score, fp_budget=100000):
+    results = pd.DataFrame({
+        "actual": y_test.values,
+        "score": y_score
+    })
+
+    results = results.sort_values("score", ascending=False).reset_index(drop=True)
+
+    results["false_positive"] = (results["actual"] == 0).astype(int)
+    results["true_positive"] = (results["actual"] == 1).astype(int)
+
+    results["cum_fp"] = results["false_positive"].cumsum()
+    results["cum_tp"] = results["true_positive"].cumsum()
+
+    allowed = results[results["cum_fp"] <= fp_budget]
+
+    tp = allowed["true_positive"].sum()
+    fp = allowed["false_positive"].sum()
+    flagged = len(allowed)
+    total_pos = results["actual"].sum()
+
+    recall = tp / total_pos if total_pos > 0 else 0
+    precision = tp / flagged if flagged > 0 else 0
+
+    print("=" * 60)
+    print("False-positive budget:", fp_budget)
+    print("Flagged transactions:", flagged)
+    print("True positives:", int(tp))
+    print("False positives:", int(fp))
+    print("Recall:", round(recall, 4))
+    print("Precision:", round(precision, 4))
+    print()
+
+
+
+
 def main():
     df = load_data()
 
@@ -261,6 +324,22 @@ def main():
     model, X_train, X_test, y_train, y_test, y_score = train_xgboost(X, y)
 
     evaluate_thresholds(y_test, y_score)
+
+    print("=" * 60)
+    print("Thresholds required for target recall")
+    print("=" * 60)
+
+ 
+    print("=" * 60)
+    print("Recall at false-positive budgets")
+    print("=" * 60)
+
+    for budget in [25000, 50000, 75000, 100000, 125000, 150000]:
+        evaluate_at_fp_budget(
+            y_test,
+            y_score,
+            fp_budget=budget
+        )
 
 
 #    importance_df = show_feature_importance(

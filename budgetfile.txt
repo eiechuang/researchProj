@@ -1,0 +1,97 @@
+============================================================
+Recall at false-positive budgets, BASE + FUZZY + SMOTE
+============================================================
+============================================================
+False-positive budget: 25000
+Threshold at budget: 0.628221333026886
+Flagged transactions: 25883
+True positives: 883
+False positives: 25000
+Recall: 0.8531
+Precision: 0.034115
+
+============================================================
+False-positive budget: 50000
+Threshold at budget: 0.5046735405921936
+Flagged transactions: 50921
+True positives: 921
+False positives: 50000
+Recall: 0.8899
+Precision: 0.018087
+
+============================================================
+False-positive budget: 75000
+Threshold at budget: 0.40726926922798157
+Flagged transactions: 75955
+True positives: 955
+False positives: 75000
+Recall: 0.9227
+Precision: 0.012573
+
+============================================================
+False-positive budget: 100000
+Threshold at budget: 0.3032692074775696
+Flagged transactions: 100985
+True positives: 985
+False positives: 100000
+Recall: 0.9517
+Precision: 0.009754
+
+============================================================
+False-positive budget: 125000
+Threshold at budget: 0.178701713681221
+Flagged transactions: 126008
+True positives: 1008
+False positives: 125000
+Recall: 0.9739
+Precision: 0.007999
+
+============================================================
+False-positive budget: 150000
+Threshold at budget: 0.06767727434635162
+Flagged transactions: 151028
+True positives: 1028
+False positives: 150000
+Recall: 0.9932
+Precision: 0.006807
+
+============================================================
+Recall at false-positive budgets
+============================================================
+============================================================
+False-positive budget: 25000
+Threshold at budget: 0.010231184773147106
+Flagged transactions: 25863
+True positives: 863
+False positives: 25000
+Recall: 0.8338
+Precision: 0.033368
+
+============================================================
+False-positive budget: 50000
+Threshold at budget: 0.005990182515233755
+Flagged transactions: 50911
+True positives: 911
+False positives: 50000
+Recall: 0.8802
+Precision: 0.017894
+
+============================================================
+False-positive budget: 75000
+Threshold at budget: 0.004215988330543041
+Flagged transactions: 75944
+True positives: 944
+False positives: 75000
+Recall: 0.9121
+Precision: 0.01243
+
+============================================================
+False-positive budget: 100000
+Threshold at budget: 0.002935257274657488
+Flagged transactions: 100975
+True positives: 975
+False positives: 100000
+Recall: 0.942
+Precision: 0.009656
+
+============================================================

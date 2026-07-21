@@ -153,6 +153,7 @@ def build_feature_matrix(df):
 
     return X, y
 
+"""""""""
 def train_xgboost(X, y):
     X_train, X_test, y_train, y_test = train_test_split(
         X,
@@ -251,7 +252,6 @@ def train_xgboost(X, y, use_smote=True):
 
     return model, X_train, X_test, y_train, y_test, y_score
 
-"""""""""
 def evaluate_thresholds(y_test, y_score, thresholds=None):
     if thresholds is None:
         thresholds = [0.3, 0.35]
