@@ -329,7 +329,90 @@ def show_feature_importance(model, feature_names, top_n=30):
  #   print()
 
     return importance_df
+def find_threshold_for_recall(y_test, y_score, target_recall=0.96):
+    results = pd.DataFrame({
+        "actual": y_test.values,
+        "score": y_score
+    })
 
+    results = results.sort_values("score", ascending=False).reset_index(drop=True)
+
+    results["true_positive"] = (results["actual"] == 1).astype(int)
+    results["false_positive"] = (results["actual"] == 0).astype(int)
+
+    results["cum_tp"] = results["true_positive"].cumsum()
+    results["cum_fp"] = results["false_positive"].cumsum()
+
+    total_laundering = results["actual"].sum()
+    results["recall"] = results["cum_tp"] / total_laundering
+    results["precision"] = results["cum_tp"] / (results.index + 1)
+
+    candidates = results[results["recall"] >= target_recall]
+
+    if candidates.empty:
+        print("No threshold reaches recall:", target_recall)
+        return None
+
+    best = candidates.iloc[0]
+
+    threshold = best["score"]
+    true_positives = int(best["cum_tp"])
+    false_positives = int(best["cum_fp"])
+    flagged = int(best.name + 1)
+    recall = best["recall"]
+    precision = best["precision"]
+
+    print("=" * 60)
+    print("Target recall:", target_recall)
+    print("Threshold needed:", threshold)
+    print("Flagged transactions:", flagged)
+    print("True positives:", true_positives)
+    print("False positives:", false_positives)
+    print("Recall:", round(recall, 4))
+    print("Precision:", round(precision, 6))
+    print()
+
+    return threshold
+
+def evaluate_at_fp_budget(y_test, y_score, fp_budget=100000):
+    results = pd.DataFrame({
+        "actual": y_test.values,
+        "score": y_score
+    })
+
+    results = results.sort_values("score", ascending=False).reset_index(drop=True)
+
+    results["true_positive"] = (results["actual"] == 1).astype(int)
+    results["false_positive"] = (results["actual"] == 0).astype(int)
+
+    results["cum_tp"] = results["true_positive"].cumsum()
+    results["cum_fp"] = results["false_positive"].cumsum()
+
+    allowed = results[results["cum_fp"] <= fp_budget]
+
+    if allowed.empty:
+        print("No transactions allowed under FP budget:", fp_budget)
+        return
+
+    true_positives = int(allowed["true_positive"].sum())
+    false_positives = int(allowed["false_positive"].sum())
+    flagged = len(allowed)
+
+    total_laundering = results["actual"].sum()
+    recall = true_positives / total_laundering
+    precision = true_positives / flagged
+
+    threshold = allowed.iloc[-1]["score"]
+
+    print("=" * 60)
+    print("False-positive budget:", fp_budget)
+    print("Threshold at budget:", threshold)
+    print("Flagged transactions:", flagged)
+    print("True positives:", true_positives)
+    print("False positives:", false_positives)
+    print("Recall:", round(recall, 4))
+    print("Precision:", round(precision, 6))
+    print()
 
 def main():
     df = load_data()
@@ -340,12 +423,32 @@ def main():
 
     evaluate_thresholds(y_test, y_score)
 
- 
-    importance_df = show_feature_importance(
-        model,
-        X.columns,
-        top_n=40
+    print("=" * 60)
+    print("Thresholds required for target recall")
+    print("=" * 60)
+
+    threshold_96 = find_threshold_for_recall(
+        y_test,
+        y_score,
+        target_recall=0.96
     )
+
+    threshold_98 = find_threshold_for_recall(
+        y_test,
+        y_score,
+        target_recall=0.98
+    )
+
+    print("=" * 60)
+    print("Recall at false-positive budgets")
+    print("=" * 60)
+
+    for budget in [25000, 50000, 75000, 100000, 125000, 150000]:
+        evaluate_at_fp_budget(
+            y_test,
+            y_score,
+            fp_budget=budget
+        )
 
 
 if __name__ == "__main__":
