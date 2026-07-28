@@ -1,0 +1,197 @@
+SMOTE + FUZZY 0.2 sampling (AKA ALL)
+
+============================================================
+Threshold: 0.3
+Confusion Matrix:
+[[1014403     231]
+ [    673     362]]
+Precision: 0.6105
+Recall: 0.3498
+F1: 0.4447
+
+============================================================
+Threshold: 0.35
+Confusion Matrix:
+[[1014462     172]
+ [    696     339]]
+Precision: 0.6634
+Recall: 0.3275
+F1: 0.4386
+
+============================================================
+Thresholds required for target recall
+============================================================
+============================================================
+Target recall: 0.96
+Threshold needed: 0.0021966383792459965
+Flagged transactions: 118300
+True positives: 994
+False positives: 117306
+Recall: 0.9604
+Precision: 0.008402
+
+============================================================
+Target recall: 0.98
+Threshold needed: 0.001491932780481875
+Flagged transactions: 137290
+True positives: 1015
+False positives: 136275
+Recall: 0.9807
+Precision: 0.007393
+
+============================================================
+Recall at false-positive budgets
+============================================================
+============================================================
+False-positive budget: 25000
+Threshold at budget: 0.010231184773147106
+Flagged transactions: 25863
+True positives: 863
+False positives: 25000
+Recall: 0.8338
+Precision: 0.033368
+
+============================================================
+False-positive budget: 50000
+Threshold at budget: 0.005990182515233755
+Flagged transactions: 50911
+True positives: 911
+False positives: 50000
+Recall: 0.8802
+Precision: 0.017894
+
+============================================================
+False-positive budget: 75000
+Threshold at budget: 0.004215988330543041
+Flagged transactions: 75944
+True positives: 944
+False positives: 75000
+Recall: 0.9121
+Precision: 0.01243
+
+============================================================
+False-positive budget: 100000
+Threshold at budget: 0.002935257274657488
+Flagged transactions: 100975
+True positives: 975
+False positives: 100000
+Recall: 0.942
+Precision: 0.009656
+
+============================================================
+False-positive budget: 125000
+Threshold at budget: 0.001898241345770657
+Flagged transactions: 126006
+True positives: 1006
+False positives: 125000
+Recall: 0.972
+Precision: 0.007984
+
+============================================================
+False-positive budget: 150000
+Threshold at budget: 0.001071394421160221
+Flagged transactions: 151023
+True positives: 1023
+False positives: 150000
+Recall: 0.9884
+Precision: 0.006774
+
+SMOTE ONLY, HARD RULES
+
+PR-AUC: 0.4362
+
+============================================================
+Threshold: 0.3
+Confusion Matrix:
+[[1014283     351]
+ [    635     400]]
+Precision: 0.5326
+Recall: 0.3865
+F1: 0.4479
+
+============================================================
+Threshold: 0.35
+Confusion Matrix:
+[[1014419     215]
+ [    657     378]]
+Precision: 0.6374
+Recall: 0.3652
+F1: 0.4644
+
+============================================================
+Thresholds required for target recall
+============================================================
+============================================================
+Target recall: 0.96
+Threshold needed: 0.002564024878665805
+Flagged transactions: 123177
+True positives: 994
+False positives: 122183
+Recall: 0.9604
+Precision: 0.00807
+
+============================================================
+Target recall: 0.98
+Threshold needed: 0.001366121112369001
+Flagged transactions: 152070
+True positives: 1015
+False positives: 151055
+Recall: 0.9807
+Precision: 0.006675
+
+============================================================
+Recall at false-positive budgets
+============================================================
+============================================================
+False-positive budget: 25000
+Threshold at budget: 0.01514299027621746
+Flagged transactions: 25858
+True positives: 858
+False positives: 25000
+Recall: 0.829
+Precision: 0.033181
+
+============================================================
+False-positive budget: 50000
+Threshold at budget: 0.008481023833155632
+Flagged transactions: 50919
+True positives: 919
+False positives: 50000
+Recall: 0.8879
+Precision: 0.018048
+
+============================================================
+False-positive budget: 75000
+Threshold at budget: 0.005470589734613895
+Flagged transactions: 75948
+True positives: 948
+False positives: 75000
+Recall: 0.9159
+Precision: 0.012482
+
+============================================================
+False-positive budget: 100000
+Threshold at budget: 0.003737420542165637
+Flagged transactions: 100976
+True positives: 976
+False positives: 100000
+Recall: 0.943
+Precision: 0.009666
+
+============================================================
+False-positive budget: 125000
+Threshold at budget: 0.0024315512273460627
+Flagged transactions: 125997
+True positives: 997
+False positives: 125000
+Recall: 0.9633
+Precision: 0.007913
+
+============================================================
+False-positive budget: 150000
+Threshold at budget: 0.0014021050883457065
+Flagged transactions: 151014
+True positives: 1014
+False positives: 150000
+Recall: 0.9797
+Precision: 0.006715
